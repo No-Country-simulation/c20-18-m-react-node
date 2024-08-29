@@ -1,5 +1,6 @@
 import './App.css';
-import './assets/login.css'
+import './assets/styles/register.css'
+
 function register() {
   return (
     <div className="register-container">

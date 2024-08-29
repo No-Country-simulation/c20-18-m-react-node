@@ -1,4 +1,4 @@
-import './assets/login.css'
+import './assets/styles/login.css'
 function Login() {
   return (
     <div className="login-container">

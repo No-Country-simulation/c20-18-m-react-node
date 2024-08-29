@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Definición de modelos
+
+model Usuario {
+  id          Int          @id @default(autoincrement())
+  nombre      String
+  apellido    String
+  email       String       @unique
+  password    String
+  // Relación uno a muchos
+  estudiantes Estudiante[]
+  padres      Padre[]
+  profesores  Profesor[]
+}
+
+model Estudiante {
+  id                 Int                    @id @default(autoincrement())
+  birthDate          DateTime
+  usuarioId          Int?
+  usuario            Usuario?               @relation(fields: [usuarioId], references: [id])
+  // Aquí puedes agregar más campos relacionados
+  Evaluacion         Evaluacion[]
+  InformeRendimiento InformeRendimiento[]
+  asignaturas        AsignaturaEstudiante[]
+}
+
+model Padre {
+  id        Int      @id @default(autoincrement())
+  usuarioId Int?
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+  // Aquí puedes agregar más campos relacionados
+}
+
+model Profesor {
+  id                 Int                  @id @default(autoincrement())
+  usuarioId          Int?
+  usuario            Usuario?             @relation(fields: [usuarioId], references: [id])
+  asignaturas        AsignaturaProfesor[]
+  // Aquí puedes agregar más campos relacionados
+  InformeRendimiento InformeRendimiento[]
+}
+
+model Evaluacion {
+  id           Int         @id @default(autoincrement())
+  estudianteId Int?
+  estudiante   Estudiante? @relation(fields: [estudianteId], references: [id])
+  // Aquí puedes agregar más campos relacionados
+}
+
+model InformeRendimiento {
+  id           Int         @id @default(autoincrement())
+  estudianteId Int?
+  estudiante   Estudiante? @relation(fields: [estudianteId], references: [id])
+  profesorId   Int?
+  profesor     Profesor?   @relation(fields: [profesorId], references: [id])
+  // Aquí puedes agregar más campos relacionados
+}
+
+model Asignatura {
+  id                   Int                    @id @default(autoincrement())
+  nombre               String
+  AsignaturaEstudiante AsignaturaEstudiante[]
+  AsignaturaProfesor   AsignaturaProfesor[]
+}
+
+model AsignaturaEstudiante {
+  id           Int        @id @default(autoincrement())
+  asignaturaId Int
+  asignatura   Asignatura @relation(fields: [asignaturaId], references: [id])
+  estudianteId Int
+  estudiante   Estudiante @relation(fields: [estudianteId], references: [id])
+}
+
+model AsignaturaProfesor {
+  id           Int        @id @default(autoincrement())
+  asignaturaId Int
+  asignatura   Asignatura @relation(fields: [asignaturaId], references: [id])
+  profesorId   Int
+  profesor     Profesor   @relation(fields: [profesorId], references: [id])
+}

@@ -1,13 +1,13 @@
-import './App.css';
-import './assets/styles/register.css'
+import { Link } from 'react-router-dom';
+import './../assets/styles/register.css'
 
-function register() {
+function Register() {
   return (
     <div className="register-container">
       <div className="register-background"></div>
       <div className="register-form-container">
         <div className="register-form">
-          <h2>Ingreso</h2>
+          <h2>Registro</h2>
           <label className='hintregister'>Ingresa tus datos para crear una cuenta nueva</label>
           <form>
             <div className="form-group">
@@ -23,6 +23,9 @@ function register() {
             </div>
             
             <button type="submit" className="register-button">Crear cuenta</button>
+            <Link to='/login'>
+              <button type='button' className="signup-button">¿Ya tienes una cuenta? Iniciar sesión</button>
+            </Link>
           </form>
           
         </div>
@@ -31,4 +34,4 @@ function register() {
   );
 }
 
-export default register;
+export default Register;

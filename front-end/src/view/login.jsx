@@ -1,4 +1,5 @@
-import './assets/styles/login.css'
+import { Link } from 'react-router-dom';
+import './../assets/styles/login.css'
 function Login() {
   return (
     <div className="login-container">
@@ -21,7 +22,9 @@ function Login() {
             </div>
             <button type="submit" className="login-button">Iniciar sesión</button>
           </form>
-          <button className="signup-button">¿Aún no tienes una cuenta? Crear cuenta</button>
+          <Link to='/register'>
+            <button type='button' className="signup-button">¿Aún no tienes una cuenta? Crear cuenta</button>
+          </Link>
         </div>
       </div>
     </div>

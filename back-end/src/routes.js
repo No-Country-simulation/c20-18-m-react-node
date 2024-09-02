@@ -1,40 +1,40 @@
 import express from 'express'
-import usuarioController from './controllers/usuario'
-import estudianteController from './controllers/estudiante'
-import profesorController from './controllers/profesor'
-import padreController from './controllers/padre'
-import informeController from './controllers/informe'
-import evaluacionController from './controllers/evaluacion'
-import cardexController from './controllers/cardex'
-import asignaturaController from './controllers/asignatura'
-import loginController from './controllers/login'
+import { getAllUsuarios, getUsuarioById, createUsuario, updateUsuario, deleteUsuario } from './controllers/usuario.js'
+import {getAllEstudiantes,getEstudianteById, createEstudiante, updateEstudiante, deleteEstudiante} from './controllers/estudiante.js'
+import { createProfesor } from './controllers/profesor.js'
+// import padreController from './controllers/padre'
+// import informeController from './controllers/informe'
+// import evaluacionController from './controllers/evaluacion'
+// import cardexController from './controllers/cardex'
+import { createAsignatura }from './controllers/asignatura.js'
+import { login } from './controllers/login.js'
 const router = express.Router()
 
-router.get('/usuarios/', usuarioController.getAllUsuarios)
-router.get('/usuarios/:id', usuarioController.getUsuarioById)
-router.post("/usuarios/", usuarioController.createUsuario);
-router.put("/usuarios/:id", usuarioController.updateUsuario);
-router.delete("/usuarios/:id", usuarioController.deleteUsuario);
+router.get('/usuarios/', getAllUsuarios)
+router.get('/usuarios/:id', getUsuarioById)
+router.post("/usuarios/", createUsuario);
+router.put("/usuarios/:id", updateUsuario);
+router.delete("/usuarios/:id", deleteUsuario);
 
-router.get('/estudiantes/', estudianteController.getAllEstudiantes)
-router.get('/estudiantes/:id', estudianteController.getEstudianteById)
-router.post("/estudiantes/", estudianteController.createEstudiante);
-router.put("/estudiantes/:id", estudianteController.updateEstudiante);
-router.delete("/estudiantes/:id", estudianteController.deleteEstudiante);
+router.get('/estudiantes/', getAllEstudiantes)
+router.get('/estudiantes/:id', getEstudianteById)
+router.post("/estudiantes/", createEstudiante);
+router.put("/estudiantes/:id", updateEstudiante);
+router.delete("/estudiantes/:id", deleteEstudiante);
 
-router.get('/profesores/', profesorController.getAllProfesores)
-router.get('/profesores/:id', profesorController.getProfesor)
-router.post("/profesores/", profesorController.createProfesor);
-router.put("/profesores/:id", profesorController.updateProfesor);
-router.delete("/profesores/:id", profesorController.deleteProfesor);
+// router.get('/profesores/', profesorController.getAllProfesores)
+// router.get('/profesores/:id', profesorController.getProfesor)
+router.post("/profesores/", createProfesor);
+// router.put("/profesores/:id", profesorController.updateProfesor);
+// router.delete("/profesores/:id", profesorController.deleteProfesor);
 
-router.get('/asignaturas/', asignaturaController.getAllAsigments);
-router.get('/asignaturas/:id', asignaturaController.getAssignmentById);
-router.post("/asignaturas/", asignaturaController.createAssignment);
-router.put("/asignaturas/:id", asignaturaController.updateAssignment);
-router.delete("/asignaturas/:id", asignaturaController.deleteAssignment);
+// router.get('/asignaturas/', asignaturaController.getAllAsigments);
+// router.get('/asignaturas/:id', asignaturaController.getAssignmentById);
+router.post("/asignaturas/", createAsignatura);
+// router.put("/asignaturas/:id", asignaturaController.updateAssignment);
+// router.delete("/asignaturas/:id", asignaturaController.deleteAssignment);
 
-router.post("/login/", loginController.login);
+// router.post("/login/", loginController.login);
 
 export default router
 

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
-import { hashPassword } from "../services/password.services"
+import { hashPassword } from "../services/password.services.js"
 
 // Get all Usuarios
 export const getAllUsuarios = async (req, res) => {

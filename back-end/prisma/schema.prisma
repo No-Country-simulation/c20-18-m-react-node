@@ -19,14 +19,22 @@ model Usuario {
   estudiantes Estudiante[]
   padres      Padre[]
   profesores  Profesor[]
-  role       String       @default("user")
+  role        RolesUsuario  @default(Usuario)
+}
+
+enum RolesUsuario {
+  Usuario
+  Admin
+  Estudiante
+  Padre
+  Profesor
 }
 
 model Estudiante {
   id                 Int                    @id @default(autoincrement())
   birthDate          DateTime
-  usuarioId          Int?
-  usuario            Usuario?               @relation(fields: [usuarioId], references: [id])
+  usuarioId          Int
+  usuario            Usuario              @relation(fields: [usuarioId], references: [id])
   // Aquí puedes agregar más campos relacionados
   Evaluacion         Evaluacion[]
   InformeRendimiento InformeRendimiento[]
@@ -35,15 +43,15 @@ model Estudiante {
 
 model Padre {
   id        Int      @id @default(autoincrement())
-  usuarioId Int?
-  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
   // Aquí puedes agregar más campos relacionados
 }
 
 model Profesor {
   id                 Int                  @id @default(autoincrement())
-  usuarioId          Int?
-  usuario            Usuario?             @relation(fields: [usuarioId], references: [id])
+  usuarioId          Int
+  usuario            Usuario             @relation(fields: [usuarioId], references: [id])
   asignaturas        AsignaturaProfesor[]
   // Aquí puedes agregar más campos relacionados
   InformeRendimiento InformeRendimiento[]

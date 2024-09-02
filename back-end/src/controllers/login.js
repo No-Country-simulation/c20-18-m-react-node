@@ -1,12 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
-import path from "path"
-import fs from "fs"
-import { comparePasswords } from "../services/password.services"
-import jwt from "jsonwebtoken"
-
-const private_key = process.env.JWT_SECRET
-
+import { comparePasswords } from "../services/password.services.js"
+import { generarToken } from "../services/jwt.services.js";
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -36,15 +31,12 @@ export const login = async (req, res) => {
         .json({ Error: "unauthorized.", message: "email or password invalid" });
 
     const userForToken = {
-      username: credentials.email,
+      email: credentials.email,
       id: credentials._id,
       role: credentials.role,
     };
 
-    const token = jwt.sign(userForToken, private_key, {
-      expiresIn: "2h",
-      algorithm: "HS256",
-    });
+    const token = generarToken(userForToken)
 
     res.status(200).json({
       token,
@@ -57,4 +49,3 @@ export const login = async (req, res) => {
   }
 };
 
-module.exports = exports;

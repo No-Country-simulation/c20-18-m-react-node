@@ -1,23 +1,12 @@
 import '../assets/styles/teacher.css'
+import Sidebar from '../assets/components/sidebar';
 
 function Teacher() {
     
     return (
-            <main>
-                 <aside className=''>
-        <h2>NoCountry</h2>
-        <section>
-          <ul>
-            <li>Estudiantes</li>
-            <li>Eventos</li>
-            <li>Mensajes</li>
-          </ul>
-          <ul>
-            <li className="logout-button">Cerrar Sesion</li>
-          </ul>
-        </section>
-      </aside>
-            </main>
+      <main >
+      <Sidebar firstli='Estudiantes' secondli='Evaluaciones' thirdli='Informes' fourthli='Eventos' fifthli='Mensajes' />
+  </main>
         )
 
 }

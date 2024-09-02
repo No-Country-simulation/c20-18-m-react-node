@@ -19,6 +19,7 @@ model Usuario {
   estudiantes Estudiante[]
   padres      Padre[]
   profesores  Profesor[]
+  role       String       @default("user")
 }
 
 model Estudiante {

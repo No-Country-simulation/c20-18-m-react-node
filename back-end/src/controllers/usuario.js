@@ -1,5 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const bcrypt = require("bcryptjs");
+
+const seed = 10;
 // Get all Usuarios
 exports.getAllUsuarios = async (req, res) => {
   try {
@@ -17,7 +20,7 @@ exports.getUsuarioById = async (req, res) => {
   const { id } = req.params;
   try {
     const usuario = await prisma.usuario.findUnique({
-      where: {  id: parseInt(id) },
+      where: { id: parseInt(id) },
     });
     res.status(200).json(usuario);
   } catch (error) {
@@ -27,14 +30,15 @@ exports.getUsuarioById = async (req, res) => {
 
 // Create a new Usuario
 exports.createUsuario = async (req, res) => {
-  const { nombre, apellido, email, password } = req.body;
+  const { nombre, apellido, email, password, role } = req.body;
   try {
     const newUsuario = await prisma.usuario.create({
       data: {
         nombre,
         apellido,
         email,
-        password,
+        password: await bcrypt.hash(password, seed),
+        role,
       },
     });
     res.status(201).json(newUsuario);
@@ -70,7 +74,7 @@ exports.deleteUsuario = async (req, res) => {
     const deletedUsuario = await prisma.usuario.delete({
       where: { id: parseInt(id) },
     });
-    res.status(204).json({message:"no content"});
+    res.status(204).json({ message: "no content" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -7,6 +7,7 @@ const informeController = require('./controllers/informe')
 const evaluacionController = require('./controllers/evaluacion')
 const cardexController = require('./controllers/cardex')
 const asignaturaController = require('./controllers/asignatura')
+const loginController = require('./controllers/login')
 const router = express.Router()
 
 router.get('/usuarios/', usuarioController.getAllUsuarios)
@@ -32,6 +33,8 @@ router.get('/asignaturas/:id', asignaturaController.getAssignmentById);
 router.post("/asignaturas/", asignaturaController.createAssignment);
 router.put("/asignaturas/:id", asignaturaController.updateAssignment);
 router.delete("/asignaturas/:id", asignaturaController.deleteAssignment);
+
+router.post("/login/", loginController.login);
 
 module.exports = router
 

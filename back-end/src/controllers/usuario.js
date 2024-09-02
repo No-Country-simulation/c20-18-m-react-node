@@ -1,10 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
-const bcrypt = require("bcryptjs");
+import { hashPassword } from "../services/password.services"
 
-const seed = 10;
 // Get all Usuarios
-exports.getAllUsuarios = async (req, res) => {
+export const getAllUsuarios = async (req, res) => {
   try {
     const usuarios = await prisma.usuario.findMany();
     if (usuarios.lenght === 0)
@@ -16,7 +15,7 @@ exports.getAllUsuarios = async (req, res) => {
 };
 
 // Get a single Usuario by ID
-exports.getUsuarioById = async (req, res) => {
+export const getUsuarioById = async (req, res) => {
   const { id } = req.params;
   try {
     const usuario = await prisma.usuario.findUnique({
@@ -29,15 +28,16 @@ exports.getUsuarioById = async (req, res) => {
 };
 
 // Create a new Usuario
-exports.createUsuario = async (req, res) => {
+export const createUsuario = async (req, res) => {
   const { nombre, apellido, email, password, role } = req.body;
+  
   try {
     const newUsuario = await prisma.usuario.create({
       data: {
         nombre,
         apellido,
         email,
-        password: await bcrypt.hash(password, seed),
+        password: await hashPassword(password),
         role,
       },
     });
@@ -48,9 +48,10 @@ exports.createUsuario = async (req, res) => {
 };
 
 // Update a Usuario by ID
-exports.updateUsuario = async (req, res) => {
+export const updateUsuario = async (req, res) => {
   const { id } = req.params;
   const { nombre, apellido, email, password } = req.body;
+  if(password) password = await hashPassword(password)
   try {
     const updatedUsuario = await prisma.usuario.update({
       where: { id: parseInt(id) },
@@ -68,7 +69,7 @@ exports.updateUsuario = async (req, res) => {
 };
 
 // Delete a Usuario by ID
-exports.deleteUsuario = async (req, res) => {
+export const deleteUsuario = async (req, res) => {
   const { id } = req.params;
   try {
     const deletedUsuario = await prisma.usuario.delete({
@@ -79,4 +80,3 @@ exports.deleteUsuario = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-module.exports = exports;

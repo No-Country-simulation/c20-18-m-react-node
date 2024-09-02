@@ -1,7 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
-exports.getAllPadres = async (req, res) => {
+export const getAllPadres = async (req, res) => {
   try {
     const padres = await prisma.Padre.findMany();
     res.status(200).json(padres);
@@ -10,7 +10,7 @@ exports.getAllPadres = async (req, res) => {
   }
 };
 
-exports.getPadreById = async (req, res) => {
+export const getPadreById = async (req, res) => {
   const { id } = req.params;
   try {
     const padre = await prisma.Padre.findUnique({
@@ -22,7 +22,7 @@ exports.getPadreById = async (req, res) => {
   }
 };
 
-exports.createPadre = async (req, res) => {
+export const createPadre = async (req, res) => {
   const { usuarioId } = req.body;
   try {
     const newPadre = await prisma.Padre.create({
@@ -35,7 +35,8 @@ exports.createPadre = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-exports.updatePadre = async (req, res) => {
+
+export const updatePadre = async (req, res) => {
   const { id } = req.params;
   const { usuarioId } = req.body;
   try {
@@ -50,7 +51,8 @@ exports.updatePadre = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-exports.deletePadre = async (req, res) => {
+
+export const deletePadre = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.Padre.delete({
@@ -61,4 +63,3 @@ exports.deletePadre = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-module.exports = exports;

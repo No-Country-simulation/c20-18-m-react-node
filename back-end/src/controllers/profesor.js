@@ -1,7 +1,8 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
+import { hashPassword } from "../services/password.services"
 
-exports.getAllProfesores = async (req, res) => {
+export const getAllProfesores = async (req, res) => {
   try {
     const cursos = await prisma.Profesor.findMany();
     res.status(200).json(cursos);
@@ -10,7 +11,7 @@ exports.getAllProfesores = async (req, res) => {
   }
 };
 
-exports.getProfesor = async (req, res) => {
+export const getProfesor = async (req, res) => {
   const { id } = req.params;
   try {
     const profesor = await prisma.Profesor.findUnique({
@@ -22,7 +23,7 @@ exports.getProfesor = async (req, res) => {
   }
 };
 
-exports.createProfesor = async (req, res) => {
+export const createProfesor = async (req, res) => {
   const { nombre, apellido, email, password, asignaturas } = req.body;
 
   try {
@@ -45,7 +46,7 @@ exports.createProfesor = async (req, res) => {
         nombre,
         apellido,
         email,
-        password,
+        password: await hashPassword(password),
         profesores: {
           create: {},
         },
@@ -75,8 +76,7 @@ exports.createProfesor = async (req, res) => {
   }
 };
 
-
-exports.updateProfesor = async (req, res) => {
+export const updateProfesor = async (req, res) => {
   const { id } = req.params;
   const { nombre, apellido, email, password } = req.body;
   try {
@@ -89,6 +89,8 @@ exports.updateProfesor = async (req, res) => {
       return res.status(404).json({ error: "Profesor not found" });
     }
 
+    const hashedPassword = password ? await hashPassword(password) : existingProfesor.usuario.password
+    
     const updatedProfesor = await prisma.profesor.update({
       where: { id: parseInt(id) },
       data: {
@@ -97,7 +99,7 @@ exports.updateProfesor = async (req, res) => {
             nombre: nombre || existingProfesor.usuario.nombre,
             apellido: apellido || existingProfesor.usuario.apellido,
             email: email || existingProfesor.usuario.email,
-            password: password ? password : existingProfesor.usuario.password, // Recuerda cifrar la nueva contraseña
+            password: hashedPassword
           },
         },
       },
@@ -112,7 +114,7 @@ exports.updateProfesor = async (req, res) => {
   }
 };
 
-exports.deleteProfesor = async (req, res) => {
+export const deleteProfesor = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.profesor.delete({
@@ -123,5 +125,3 @@ exports.deleteProfesor = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-module.exports = exports;

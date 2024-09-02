@@ -1,7 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
-exports.getAllEstudiantes = async (req, res) => {
+export const getAllEstudiantes = async (req, res) => {
   try {
     const estudiantes = await prisma.Estudiante.findMany();
     res.status(200).json(estudiantes);
@@ -11,7 +11,7 @@ exports.getAllEstudiantes = async (req, res) => {
 };
 
 // Get a single Estudiante by ID
-exports.getEstudianteById = async (req, res) => {
+export const getEstudianteById = async (req, res) => {
   const { id } = req.params;
   try {
     const estudiante = await prisma.estudiante.findUnique({
@@ -24,7 +24,7 @@ exports.getEstudianteById = async (req, res) => {
 };
 
 // Create a new Estudiante
-exports.createEstudiante = async (req, res) => {
+export const createEstudiante = async (req, res) => {
   const {
     usuarioId,
     birthDate,
@@ -49,7 +49,7 @@ exports.createEstudiante = async (req, res) => {
 };
 
 // Update an Estudiante by ID
-exports.updateEstudiante = async (req, res) => {
+export const updateEstudiante = async (req, res) => {
   const { id } = req.params;
   const {
     usuarioId,
@@ -76,7 +76,7 @@ exports.updateEstudiante = async (req, res) => {
 };
 
 // Delete an Estudiante by ID
-exports.deleteEstudiante = async (req, res) => {
+export const deleteEstudiante = async (req, res) => {
   const { id } = req.params;
   try {
     const deletedEstudiante = await prisma.estudiante.delete({
@@ -87,5 +87,3 @@ exports.deleteEstudiante = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-module.exports = exports;

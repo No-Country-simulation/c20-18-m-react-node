@@ -1,12 +1,14 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
-const path = require("path");
-const fs = require("fs");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import path from "path"
+import fs from "fs"
+import { comparePasswords } from "../services/password.services"
+import jwt from "jsonwebtoken"
 
-const private_key = "Me gusta la carne, la leche y el pan";
-exports.login = async (req, res) => {
+const private_key = process.env.JWT_SECRET
+
+
+export const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!(email || password))
@@ -26,7 +28,7 @@ exports.login = async (req, res) => {
     const validPassword =
       credentials === null
         ? false
-        : await bcrypt.compare(password, credentials.password);
+        : await comparePasswords(password, credentials.password);
 
     if (!(credentials && validPassword))
       return res

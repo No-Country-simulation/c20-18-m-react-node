@@ -1,13 +1,13 @@
-const express = require('express')
-const usuarioController = require('./controllers/usuario')
-const estudianteController = require('./controllers/estudiante')
-const profesorController = require('./controllers/profesor')
-const padreController = require('./controllers/padre')
-const informeController = require('./controllers/informe')
-const evaluacionController = require('./controllers/evaluacion')
-const cardexController = require('./controllers/cardex')
-const asignaturaController = require('./controllers/asignatura')
-const loginController = require('./controllers/login')
+import express from 'express'
+import usuarioController from './controllers/usuario'
+import estudianteController from './controllers/estudiante'
+import profesorController from './controllers/profesor'
+import padreController from './controllers/padre'
+import informeController from './controllers/informe'
+import evaluacionController from './controllers/evaluacion'
+import cardexController from './controllers/cardex'
+import asignaturaController from './controllers/asignatura'
+import loginController from './controllers/login'
 const router = express.Router()
 
 router.get('/usuarios/', usuarioController.getAllUsuarios)
@@ -36,7 +36,7 @@ router.delete("/asignaturas/:id", asignaturaController.deleteAssignment);
 
 router.post("/login/", loginController.login);
 
-module.exports = router
+export default router
 
 
 

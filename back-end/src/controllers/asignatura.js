@@ -1,7 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
-exports.getAllAsigments = async (req, res) => {
+export const getAllAsigments = async (req, res) => {
   try {
     const assignments = await prisma.asignatura.findMany();
     res.json(assignments);
@@ -9,7 +9,7 @@ exports.getAllAsigments = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-exports.getAssignmentById = async (req, res) => {
+export const getAssignmentById = async (req, res) => {
   const { id } = req.params;
   try {
     const assignment = await prisma.asignatura.findUnique({
@@ -23,7 +23,7 @@ exports.getAssignmentById = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-exports.createAssignment = async (req, res) => {
+export const createAssignment = async (req, res) => {
   const { nombre,  } = req.body;
   try {
     const assignment = await prisma.asignatura.create({
@@ -34,7 +34,7 @@ exports.createAssignment = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-exports.updateAssignment = async (req, res) => {
+export const updateAssignment = async (req, res) => {
   const { id } = req.params;
   const { title, description } = req.body;
   try {
@@ -47,7 +47,7 @@ exports.updateAssignment = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-exports.deleteAssignment = async (req, res) => {
+export const deleteAssignment = async (req, res) => {
   const { id } = req.params;
   try {
     const assignment = await prisma.asignatura.delete({

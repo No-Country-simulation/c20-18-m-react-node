@@ -2,6 +2,28 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 import { hashPassword } from "../services/password.services.js"
 
+export const getAllProfesores = async (req, res) => {
+  try {
+    const profesores = await prisma.profesor.findMany({
+      include: {
+        usuario: {
+          select: {
+            nombre: true,
+            apellido: true,
+            email: true
+          }
+        },
+        asignaturas: true
+      }
+    })
+    if(!profesores) return res.status(404).json({ error: "No se encontraron profesores."})
+    
+    res.status(200).json(profesores)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
 export const createProfesor = async (req, res) => {
   const { nombre, apellido, email, password } = req.body
 
@@ -13,7 +35,7 @@ export const createProfesor = async (req, res) => {
         nombre,
         apellido,
         email,
-        hashedPassword,
+        password: hashedPassword,
         role: "Profesor"
       }
     })
@@ -26,5 +48,34 @@ export const createProfesor = async (req, res) => {
     res.status(201).json(profesor)
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+}
+
+export const asignarAsignaturas = async (req, res) => {
+  const { id } = req.params 
+  const { asignaturas } = req.body
+  if(!asignaturas || !asignaturas.length) return res.status(400).json({ error: "Se requiere una lista de asignaturas"})
+
+  try {
+    const profesor = await prisma.profesor.findUnique({ where: { id: parseInt(id) }})
+    if(!profesor) return res.status(404).json({ error: "Profesor no encontrado"})
+    
+    const updatedProfesor = await prisma.profesor.update({
+      where: { id: profesor.id },
+      data: {
+        asignaturas: {
+          connect: asignaturas.map(asignaturaId => ({
+            id: asignaturaId
+          }))
+        }
+      },
+      include: {
+        asignaturas: true
+      },
+    })
+
+    res.status(200).json({ message: "Asignaturas creadas", updatedProfesor})
+  } catch (error) {
+    res.status(500).json({ error: error.message })
   }
 }

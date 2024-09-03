@@ -9,6 +9,7 @@ import { asignarAsignaturas, createProfesor, getAllProfesores } from './controll
 import { createAsignatura, getAllAsignaturas }from './controllers/asignatura.js'
 import { login } from './controllers/login.js'
 import { authenticateToken } from './services/jwt.services.js'
+import { createEvaluacion } from './controllers/evaluacion.js'
 const router = express.Router()
 
 router.get('/usuarios/', getAllUsuarios)
@@ -24,17 +25,13 @@ router.put("/estudiantes/:id", updateEstudiante);
 router.delete("/estudiantes/:id", deleteEstudiante);
 
 router.get('/profesores/', authenticateToken, getAllProfesores)
-// router.get('/profesores/:id', profesorController.getProfesor)
 router.post("/profesores/", createProfesor);
 router.post("/profesores/:id/asignaturas", asignarAsignaturas)
-// router.put("/profesores/:id", profesorController.updateProfesor);
-// router.delete("/profesores/:id", profesorController.deleteProfesor);
 
 router.get('/asignaturas/', getAllAsignaturas);
-// router.get('/asignaturas/:id', asignaturaController.getAssignmentById);
 router.post("/asignaturas/", createAsignatura);
-// router.put("/asignaturas/:id", asignaturaController.updateAssignment);
-// router.delete("/asignaturas/:id", asignaturaController.deleteAssignment);
+
+router.post("/evaluaciones/", createEvaluacion)
 
 router.post("/login/", login);
 

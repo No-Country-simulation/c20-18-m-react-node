@@ -35,9 +35,9 @@ model Estudiante {
   birthDate          DateTime?
   usuarioId          Int
   usuario            Usuario              @relation(fields: [usuarioId], references: [id])
-  Evaluacion         Evaluacion[]
   InformeRendimiento InformeRendimiento[]
   asignaturas        Asignatura[]         @relation("EstudianteAsignaturas")
+  notas              Nota[]               @relation("NotasEstudiante")
 }
 
 model Padre {
@@ -51,15 +51,26 @@ model Profesor {
   usuarioId          Int
   usuario            Usuario             @relation(fields: [usuarioId], references: [id])
   asignaturas        Asignatura[]        @relation("ProfesorAsignaturas")
-  // Aquí puedes agregar más campos relacionados
   InformeRendimiento InformeRendimiento[]
+  evaluaciones       Evaluacion[]
 }
 
 model Evaluacion {
-  id           Int         @id @default(autoincrement())
-  estudianteId Int?
-  estudiante   Estudiante? @relation(fields: [estudianteId], references: [id])
-  // Aquí puedes agregar más campos relacionados
+  id              Int            @id @default(autoincrement())
+  profesorId      Int
+  profesor        Profesor       @relation(fields: [profesorId], references: [id])
+  asignaturaId    Int
+  asignatura      Asignatura     @relation(fields: [asignaturaId], references: [id], name: "AsignaturaEvaluacion")
+  notas           Nota[]
+}
+
+model Nota {
+  id              Int            @id @default(autoincrement())
+  evaluacionId    Int
+  evaluacion      Evaluacion     @relation(fields: [evaluacionId], references: [id])
+  estudianteId    Int            
+  estudiante      Estudiante     @relation(fields: [estudianteId], references: [id], name: "NotasEstudiante")
+  nota            Int
 }
 
 model InformeRendimiento {
@@ -76,4 +87,5 @@ model Asignatura {
   nombre               String
   profesores           Profesor[]             @relation("ProfesorAsignaturas")
   estudiantes          Estudiante[]           @relation("EstudianteAsignaturas")
+  evaluaciones         Evaluacion[]           @relation("AsignaturaEvaluacion")
 }

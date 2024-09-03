@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client"
+import { hashPassword } from "../services/password.services.js";
 const prisma = new PrismaClient();
+
 
 export const getAllEstudiantes = async (req, res) => {
   try {
@@ -25,28 +27,31 @@ export const getEstudianteById = async (req, res) => {
 
 // Create a new Estudiante
 export const createEstudiante = async (req, res) => {
-  const {
-    usuarioId,
-    birthDate,
-    cardexId,
-    evaluacionId,
-    informeRendimientoId,
-  } = req.body;
+  const { nombre, apellido, email, password } = req.body
+
   try {
-    const newEstudiante = await prisma.estudiante.create({
+    if(!nombre || !apellido || !email || !password) return res.status(400).json({ message: "Todos los campos son obligatorios"})
+    const hashedPassword = await hashPassword(password)
+    const usuario = await prisma.usuario.create({
       data: {
-        usuarioId,
-        birthDate: new Date(birthDate),
-        cardexId,
-        evaluacionId,
-        informeRendimientoId,
-      },
-    });
-    res.status(201).json(newEstudiante);
+        nombre,
+        apellido,
+        email,
+        password: hashedPassword,
+        role: "Estudiante"
+      }
+    })
+
+    const estudiante = await prisma.estudiante.create({
+      data: {
+        usuarioId: usuario.id
+      }
+    })
+    res.status(201).json(estudiante)
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+}
 
 // Update an Estudiante by ID
 export const updateEstudiante = async (req, res) => {

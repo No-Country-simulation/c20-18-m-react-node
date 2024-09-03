@@ -30,14 +30,14 @@ export const getUsuarioById = async (req, res) => {
 // Create a new Usuario
 export const createUsuario = async (req, res) => {
   const { nombre, apellido, email, password, role } = req.body;
-  
+  const hashedPassword = await hashPassword(password)
   try {
     const newUsuario = await prisma.usuario.create({
       data: {
         nombre,
         apellido,
         email,
-        password: await hashPassword(password),
+        password: hashedPassword,
         role,
       },
     });
@@ -50,8 +50,12 @@ export const createUsuario = async (req, res) => {
 // Update a Usuario by ID
 export const updateUsuario = async (req, res) => {
   const { id } = req.params;
+  const data = req.data
+
+  if(data.role != "Admin" && id != data.id) return res.status(401).json({ error: "No autorizado."})
+  
   const { nombre, apellido, email, password } = req.body;
-  if(password) password = await hashPassword(password)
+
   try {
     const updatedUsuario = await prisma.usuario.update({
       where: { id: parseInt(id) },
@@ -59,9 +63,10 @@ export const updateUsuario = async (req, res) => {
         nombre,
         apellido,
         email,
-        password,
+        password: password ? await hashPassword(password) : undefined,
       },
     });
+    
     res.status(200).json(updatedUsuario);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -71,6 +76,10 @@ export const updateUsuario = async (req, res) => {
 // Delete a Usuario by ID
 export const deleteUsuario = async (req, res) => {
   const { id } = req.params;
+  const data = req.data
+
+  if(data.role != "Admin") return res.status(401).json({ error: "No autorizado." })
+
   try {
     const deletedUsuario = await prisma.usuario.delete({
       where: { id: parseInt(id) },

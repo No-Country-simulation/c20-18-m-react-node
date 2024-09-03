@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client"
+import { hashPassword } from "../services/password.services";
+
 const prisma = new PrismaClient();
 
 export const getAllPadres = async (req, res) => {
@@ -23,11 +25,22 @@ export const getPadreById = async (req, res) => {
 };
 
 export const createPadre = async (req, res) => {
-  const { usuarioId } = req.body;
+  const { nombre, apellido, email, password } = req.body;
+  if(!nombre || !apellido || !email || !password) return res.status(400).json({ message: "Todos los campos son obligatorios"})
   try {
+    const hashedPassword = await hashPassword(password)
+    const usuario = await prisma.usuario.create({
+      data: {
+        nombre,
+        apellido,
+        email,
+        password: hashedPassword,
+        role: "Profesor"
+      }
+    })
     const newPadre = await prisma.Padre.create({
       data: {
-        usuarioId: parseInt(usuarioId),
+        usuarioId: usuario.id,
       },
     });
     res.status(201).json(newPadre);

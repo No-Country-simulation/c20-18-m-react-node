@@ -32,7 +32,7 @@ export const login = async (req, res) => {
 
     const userForToken = {
       email: credentials.email,
-      id: credentials._id,
+      id: credentials.id,
       role: credentials.role,
     };
 

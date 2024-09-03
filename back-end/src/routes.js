@@ -8,13 +8,14 @@ import { asignarAsignaturas, createProfesor, getAllProfesores } from './controll
 // import cardexController from './controllers/cardex'
 import { createAsignatura, getAllAsignaturas }from './controllers/asignatura.js'
 import { login } from './controllers/login.js'
+import { authenticateToken } from './services/jwt.services.js'
 const router = express.Router()
 
 router.get('/usuarios/', getAllUsuarios)
 router.get('/usuarios/:id', getUsuarioById)
 router.post("/usuarios/", createUsuario);
-router.put("/usuarios/:id", updateUsuario);
-router.delete("/usuarios/:id", deleteUsuario);
+router.put("/usuarios/:id", authenticateToken, updateUsuario);
+router.delete("/usuarios/:id", authenticateToken, deleteUsuario);
 
 router.get('/estudiantes/', getAllEstudiantes)
 router.get('/estudiantes/:id', getEstudianteById)
@@ -22,7 +23,7 @@ router.post("/estudiantes/", createEstudiante);
 router.put("/estudiantes/:id", updateEstudiante);
 router.delete("/estudiantes/:id", deleteEstudiante);
 
-router.get('/profesores/', getAllProfesores)
+router.get('/profesores/', authenticateToken, getAllProfesores)
 // router.get('/profesores/:id', profesorController.getProfesor)
 router.post("/profesores/", createProfesor);
 router.post("/profesores/:id/asignaturas", asignarAsignaturas)
@@ -35,7 +36,7 @@ router.post("/asignaturas/", createAsignatura);
 // router.put("/asignaturas/:id", asignaturaController.updateAssignment);
 // router.delete("/asignaturas/:id", asignaturaController.deleteAssignment);
 
-// router.post("/login/", loginController.login);
+router.post("/login/", login);
 
 export default router
 

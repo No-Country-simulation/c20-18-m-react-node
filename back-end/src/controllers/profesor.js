@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient();
 import { hashPassword } from "../services/password.services.js"
+const prisma = new PrismaClient();
 
 export const getAllProfesores = async (req, res) => {
   try {

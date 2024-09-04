@@ -20,6 +20,7 @@ model Usuario {
   padres      Padre[]
   profesores  Profesor[]
   role        RolesUsuario  @default(Usuario)
+    eventos     UsuarioEvento[] // Relación con UsuarioEvento
 }
 
 enum RolesUsuario {
@@ -99,4 +100,21 @@ model Asignatura {
   profesores           Profesor[]             @relation("ProfesorAsignaturas")
   estudiantes          Estudiante[]           @relation("EstudianteAsignaturas")
   evaluaciones         Evaluacion[]           @relation("AsignaturaEvaluacion")
+}
+
+model Evento {
+  id          Int             @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  fecha       DateTime
+  usuarios    UsuarioEvento[] // Relación con UsuarioEvento
+}
+
+model UsuarioEvento {
+  usuarioId Int
+  eventoId  Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  evento    Evento  @relation(fields: [eventoId], references: [id])
+
+  @@id([usuarioId, eventoId]) // Clave primaria compuesta
 }

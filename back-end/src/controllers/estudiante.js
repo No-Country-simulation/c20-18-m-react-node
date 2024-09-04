@@ -1,14 +1,15 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../services/password.services.js";
 const prisma = new PrismaClient();
 
-
 export const getAllEstudiantes = async (req, res) => {
   try {
-    const estudiantes = await prisma.Estudiante.findMany({
+    const estudiantes = await prisma.estudiante.findMany({
+
       include: {
-        notas: true
-      }
+        usuario: true,
+        notas: true,
+      },
     });
     res.status(200).json(estudiantes);
   } catch (error) {
@@ -31,42 +32,40 @@ export const getEstudianteById = async (req, res) => {
 
 // Create a new Estudiante
 export const createEstudiante = async (req, res) => {
-  const { nombre, apellido, email, password } = req.body
+  const { nombre, apellido, email, password } = req.body;
 
   try {
-    if(!nombre || !apellido || !email || !password) return res.status(400).json({ message: "Todos los campos son obligatorios"})
-    const hashedPassword = await hashPassword(password)
+    if (!nombre || !apellido || !email || !password)
+      return res
+        .status(400)
+        .json({ message: "Todos los campos son obligatorios" });
+    const hashedPassword = await hashPassword(password);
     const usuario = await prisma.usuario.create({
       data: {
         nombre,
         apellido,
         email,
         password: hashedPassword,
-        role: "Estudiante"
-      }
-    })
+        role: "Estudiante",
+      },
+    });
 
     const estudiante = await prisma.estudiante.create({
       data: {
-        usuarioId: usuario.id
-      }
-    })
-    res.status(201).json(estudiante)
+        usuarioId: usuario.id,
+      },
+    });
+    res.status(201).json(estudiante);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 // Update an Estudiante by ID
 export const updateEstudiante = async (req, res) => {
   const { id } = req.params;
-  const {
-    usuarioId,
-    birthDate,
-    cardexId,
-    evaluacionId,
-    informeRendimientoId,
-  } = req.body;
+  const { usuarioId, birthDate, cardexId, evaluacionId, informeRendimientoId } =
+    req.body;
   try {
     const updatedEstudiante = await prisma.estudiante.update({
       where: { id: parseInt(id) },

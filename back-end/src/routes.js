@@ -17,6 +17,7 @@ import {
   asignarAsignaturas,
   createProfesor,
   getAllProfesores,
+  getProfesorById,
 } from "./controllers/profesor.js";
 // import padreController from './controllers/padre'
 // import informeController from './controllers/informe'
@@ -55,8 +56,9 @@ router.put("/estudiantes/:id", updateEstudiante);
 router.delete("/estudiantes/:id", deleteEstudiante);
 
 router.get("/profesores/", getAllProfesores);
+router.get("/profesores/:id", getProfesorById)
 router.post("/profesores/", createProfesor);
-router.post("/profesores/:id/asignaturas", asignarAsignaturas);
+router.put("/profesores/:id/asignaturas", asignarAsignaturas);
 
 router.get("/asignaturas/", getAllAsignaturas);
 router.post("/asignaturas/", createAsignatura);

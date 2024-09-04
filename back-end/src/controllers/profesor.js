@@ -13,17 +13,37 @@ export const getAllProfesores = async (req, res) => {
             email: true
           }
         },
-        asignaturas: true,
-        evaluaciones: {
-          include: {
-            notas: true
-          }
-        }
+        asignaturas: true
       }
     })
     if(!profesores) return res.status(404).json({ error: "No se encontraron profesores."})
     
     res.status(200).json(profesores)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
+export const getProfesorById = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const profesor = await prisma.profesor.findUnique({
+      where: {id: parseInt(id)},
+      include: {
+        usuario: {
+          select: {
+            nombre: true,
+            apellido: true,
+            email: true
+          }
+        },
+        asignaturas: true,
+        evaluaciones: true
+      }
+    })
+    if(!profesor) return res.status(404).json({ error: "Profesor no encontrado" })
+    res.status(200).json({profesor})
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
@@ -53,6 +73,14 @@ export const createProfesor = async (req, res) => {
             id: asignaturaId
           })) : undefined
         }
+      },
+      include: {
+        usuario: {
+          select: {
+            nombre: true,
+            apellido: true
+          }
+        }
       }
     })
     res.status(201).json(profesor)
@@ -67,16 +95,29 @@ export const asignarAsignaturas = async (req, res) => {
   if(!asignaturas || !asignaturas.length) return res.status(400).json({ error: "Se requiere una lista de asignaturas"})
 
   try {
-    const profesor = await prisma.profesor.findUnique({ where: { id: parseInt(id) }})
+    const profesor = await prisma.profesor.findUnique({ 
+      where: { id: parseInt(id) },
+      include: {
+        asignaturas: true
+      }
+  })
     if(!profesor) return res.status(404).json({ error: "Profesor no encontrado"})
-    
+       
+    const currentAsignaturasIds = profesor.asignaturas.map(asignatura => asignatura.id)
+
+    const asignaturasToDisconnect = currentAsignaturasIds.filter(
+      asignaturaId => !asignaturas.includes(asignaturaId)
+    )
+    const asignaturasToConnect = asignaturas.filter(
+      asignaturaId => !currentAsignaturasIds.includes(asignaturaId)
+    )
+  
     const updatedProfesor = await prisma.profesor.update({
       where: { id: profesor.id },
       data: {
         asignaturas: {
-          connect: asignaturas.map(asignaturaId => ({
-            id: asignaturaId
-          }))
+          disconnect: asignaturasToDisconnect.map(id => ({ id })),
+          connect: asignaturasToConnect.map(id => ({ id }))
         }
       },
       include: {

@@ -19,7 +19,7 @@ import {
   getAllProfesores,
   getProfesorById,
 } from "./controllers/profesor.js";
-// import padreController from './controllers/padre'
+import { getAllPadres, getPadreById, createPadre } from "./controllers/padre.js";
 // import informeController from './controllers/informe'
 // import evaluacionController from './controllers/evaluacion'
 // import cardexController from './controllers/cardex'
@@ -59,6 +59,10 @@ router.get("/profesores/", getAllProfesores);
 router.get("/profesores/:id", getProfesorById)
 router.post("/profesores/", createProfesor);
 router.put("/profesores/:id/asignaturas", asignarAsignaturas);
+
+router.get("/padres/", getAllPadres);
+router.get("/padres/:id", getPadreById);
+router.post("/padres/", createPadre);
 
 router.get("/asignaturas/", getAllAsignaturas);
 router.post("/asignaturas/", createAsignatura);

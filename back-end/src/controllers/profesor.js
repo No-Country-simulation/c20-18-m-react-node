@@ -13,7 +13,11 @@ export const getAllProfesores = async (req, res) => {
             email: true
           }
         },
-        asignaturas: true
+        asignaturas: {
+          select: {
+            nombre: true
+          }
+        }
       }
     })
     if(!profesores) return res.status(404).json({ error: "No se encontraron profesores."})

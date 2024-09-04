@@ -1,11 +1,23 @@
 import { PrismaClient } from "@prisma/client"
-import { hashPassword } from "../services/password.services";
+import { hashPassword } from "../services/password.services.js";
 
 const prisma = new PrismaClient();
 
 export const getAllPadres = async (req, res) => {
   try {
-    const padres = await prisma.Padre.findMany();
+    const padres = await prisma.padre.findMany({
+      include:{
+        usuario:{
+          select:{
+            nombre: true,
+            apellido: true,
+            email: true,
+            role: true,
+          }
+        },
+        estudiantes: true,
+      }
+    });
     res.status(200).json(padres);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,8 +27,11 @@ export const getAllPadres = async (req, res) => {
 export const getPadreById = async (req, res) => {
   const { id } = req.params;
   try {
-    const padre = await prisma.Padre.findUnique({
+    const padre = await prisma.padre.findUnique({
       where: { id: parseInt(id) },
+      include: {
+        estudiantes: true, // Incluye solo los estudiantes relacionados con este padre
+      },
     });
     res.status(200).json(padre);
   } catch (error) {
@@ -35,10 +50,10 @@ export const createPadre = async (req, res) => {
         apellido,
         email,
         password: hashedPassword,
-        role: "Profesor"
+        role: "Padre"
       }
     })
-    const newPadre = await prisma.Padre.create({
+    const newPadre = await prisma.padre.create({
       data: {
         usuarioId: usuario.id,
       },

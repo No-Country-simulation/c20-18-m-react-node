@@ -20,7 +20,7 @@ model Usuario {
   padres      Padre[]
   profesores  Profesor[]
   role        RolesUsuario  @default(Usuario)
-    eventos     UsuarioEvento[] // Relación con UsuarioEvento
+  eventos     UsuarioEvento[] // Relación con UsuarioEvento
 }
 
 enum RolesUsuario {
@@ -40,12 +40,14 @@ model Estudiante {
   asignaturas        Asignatura[]           @relation("EstudianteAsignaturas")
   notas              Nota[]                 @relation("NotasEstudiante")
   informes           Informe[]              @relation("InformesEstudiante")
+  padre              Padre[]                @relation("PadreEstudiante")
 }
 
 model Padre {
   id        Int      @id @default(autoincrement())
   usuarioId Int
   usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  estudiantes       Estudiante[]          @relation("PadreEstudiante")
 }
 
 model Profesor {

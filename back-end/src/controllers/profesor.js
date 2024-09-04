@@ -13,7 +13,12 @@ export const getAllProfesores = async (req, res) => {
             email: true
           }
         },
-        asignaturas: true
+        asignaturas: true,
+        evaluaciones: {
+          include: {
+            notas: true
+          }
+        }
       }
     })
     if(!profesores) return res.status(404).json({ error: "No se encontraron profesores."})
@@ -25,7 +30,7 @@ export const getAllProfesores = async (req, res) => {
 }
 
 export const createProfesor = async (req, res) => {
-  const { nombre, apellido, email, password } = req.body
+  const { nombre, apellido, email, password, asignaturas } = req.body
 
   try {
     if(!nombre || !apellido || !email || !password) return res.status(400).json({ message: "Todos los campos son obligatorios"})
@@ -42,7 +47,12 @@ export const createProfesor = async (req, res) => {
 
     const profesor = await prisma.profesor.create({
       data: {
-        usuarioId: usuario.id
+        usuarioId: usuario.id,
+        asignaturas: {
+          connect: asignaturas ? asignaturas.map(asignaturaId => ({
+            id: asignaturaId
+          })) : undefined
+        }
       }
     })
     res.status(201).json(profesor)

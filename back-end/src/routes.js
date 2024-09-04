@@ -9,7 +9,7 @@ import { asignarAsignaturas, createProfesor, getAllProfesores } from './controll
 import { createAsignatura, getAllAsignaturas }from './controllers/asignatura.js'
 import { login } from './controllers/login.js'
 import { authenticateToken } from './services/jwt.services.js'
-import { createEvaluacion } from './controllers/evaluacion.js'
+import { createEvaluacion, getAllEvaluciones } from './controllers/evaluacion.js'
 const router = express.Router()
 
 router.get('/usuarios/', getAllUsuarios)
@@ -24,7 +24,7 @@ router.post("/estudiantes/", createEstudiante);
 router.put("/estudiantes/:id", updateEstudiante);
 router.delete("/estudiantes/:id", deleteEstudiante);
 
-router.get('/profesores/', authenticateToken, getAllProfesores)
+router.get('/profesores/', getAllProfesores)
 router.post("/profesores/", createProfesor);
 router.post("/profesores/:id/asignaturas", asignarAsignaturas)
 
@@ -32,6 +32,7 @@ router.get('/asignaturas/', getAllAsignaturas);
 router.post("/asignaturas/", createAsignatura);
 
 router.post("/evaluaciones/", createEvaluacion)
+router.get("/evaluaciones/", getAllEvaluciones)
 
 router.post("/login/", login);
 

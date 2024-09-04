@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 
 export const getAllEstudiantes = async (req, res) => {
   try {
-    const estudiantes = await prisma.Estudiante.findMany();
+    const estudiantes = await prisma.Estudiante.findMany({
+      include: {
+        notas: true
+      }
+    });
     res.status(200).json(estudiantes);
   } catch (error) {
     res.status(500).json({ error: error.message });

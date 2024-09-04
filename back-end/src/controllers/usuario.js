@@ -5,7 +5,13 @@ import { hashPassword } from "../services/password.services.js"
 // Get all Usuarios
 export const getAllUsuarios = async (req, res) => {
   try {
-    const usuarios = await prisma.usuario.findMany();
+    const usuarios = await prisma.usuario.findMany({
+      include: {
+        profesores: true,
+        estudiantes: true,
+        padres: true
+      }
+    });
     if (usuarios.lenght === 0)
       return res.status(404).json({ error: "No hay usuarios" });
     res.status(200).json(usuarios);

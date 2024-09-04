@@ -1,8 +1,39 @@
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
+export const getAllEvaluciones = async (req, res) => {
+    try {
+        const evaluaciones = await prisma.evaluacion.findMany({
+            include: {
+                profesor: {
+                    select: {
+                        usuario: {
+                            select: {
+                                nombre: true,
+                                apellido: true
+                            }
+                        }
+                    }
+                },
+                asignatura: {
+                    select: {
+                        nombre: true
+                    }
+                },
+                notas: true,
+                informes: true
+            }
+        })
+        if(!evaluaciones) return res.status(404).json({ error: "No se encontraro evaluaciones"})
+        
+        res.status(200).json(evaluaciones)
+    } catch (error) {
+        res.status(500).json({error: error.message})
+    }
+}
+
 export const createEvaluacion = async (req, res) => {
-    const { profesorId, asignaturaId, notas } = req.body
+    const { profesorId, asignaturaId, notas, informes } = req.body
     if(!profesorId || !asignaturaId) return res.status(400).json({ error: "El profesor y la asignatura son requeridos"})
     
     try {
@@ -16,10 +47,16 @@ export const createEvaluacion = async (req, res) => {
                 asignaturaId,
                 notas: {
                     create: notas.map(nota => ({
-                        estudiante: {connect: {id: nota.estudianteId}},
+                        estudianteId: nota.estudianteId,
                         nota: nota.nota
                     }))
-                }
+                },
+                informes: informes ? {
+                    create: informes.map(informe => ({
+                        estudianteId: informe.estudianteId,
+                        informe: informe.informe
+                    }))
+                } : undefined
             },
             include: {
                 notas: true

@@ -16,17 +16,11 @@ function NavBar() {
       <NavLink className='nav-link' to={routes.historialAcademico}>
         Historial Académico
       </NavLink>
-      <NavLink className='nav-link' to={routes.evaluaciones}>
-        Evaluaciones
-      </NavLink>
       <NavLink className='nav-link' to={routes.informes}>
         Informes
       </NavLink>
       <NavLink className='nav-link' to={routes.eventos}>
         Eventos
-      </NavLink>
-      <NavLink className='nav-link' to={routes.mensajes}>
-        Mensajes
       </NavLink>
     </nav>
   );

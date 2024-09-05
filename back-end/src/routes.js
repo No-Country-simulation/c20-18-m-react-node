@@ -31,6 +31,7 @@ import { login } from "./controllers/login.js";
 import { authenticateToken } from "./services/jwt.services.js";
 import {
   createEvaluacion,
+  deleteEvaluacion,
   getAllEvaluciones,
   getEvaluacionById,
 } from "./controllers/evaluacion.js";
@@ -71,6 +72,7 @@ router.post("/asignaturas/", createAsignatura);
 router.post("/evaluaciones/", authenticateToken, createEvaluacion);
 router.get("/evaluaciones/", authenticateToken, getAllEvaluciones);
 router.get("/evaluaciones/:id", authenticateToken, getEvaluacionById)
+router.get("/evaluacionesd/:id", authenticateToken, deleteEvaluacion)
 
 router.get("/eventos/", getAllEvents);
 router.get("/eventos/:id", getEventById);

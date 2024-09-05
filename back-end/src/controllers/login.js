@@ -10,15 +10,9 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: "One or more fields are missing" });
 
   try {
-    // Log the request payload for debugging
-
-    console.log(`Request payload: ${JSON.stringify(req.body)}`);
-
     const credentials = await prisma.usuario.findUnique({
       where: { email: email },
     });
-
-    console.log(`User found: ${JSON.stringify(credentials)}`); // Added JSON.stringify for better visibility
 
     const validPassword =
       credentials === null
@@ -40,8 +34,9 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       token,
-      username: credentials.email,
-      id: credentials.id,
+      nombre: credentials.nombre,
+      apellido: credentials.apellido,
+      email: credentials.email,
       role: credentials.role,
     });
   } catch (err) {

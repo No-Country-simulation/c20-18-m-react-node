@@ -78,3 +78,19 @@ export const createEvaluacion = async (req, res) => {
         res.status(500).json({error: error.message})
     }
 }
+
+export const deleteEvaluacion = async (req, res) => {
+    const { id } = req.params
+    const data = req.data
+
+    if(data.role != "Admin" && data.role != "Profesor") return res.status(401).json({ error: "No autorizado"})
+    
+    try {
+        const evaluacion = await prisma.evaluacion.findUnique({where: {id: parseInt(id)}})
+        if(!evaluacion) return res.status(404).json({error: "No se encontro la evaluacion"})
+        
+        res.json(evaluacion)
+    } catch (error) {
+        
+    }
+}

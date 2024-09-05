@@ -6,7 +6,6 @@ export const getAllEvaluciones = async (req, res) => {
     if(role != "Admin" && role != "Profesor") return res.status(401).json({error: "No autorizado"})
     try {
         const evaluaciones = await prisma.evaluacion.findMany({
-            where: {profesorId: id},
             include: {
                 asignatura: {
                     select: {
@@ -25,7 +24,7 @@ export const getAllEvaluciones = async (req, res) => {
 
 export const getEvaluacionById = async (req, res) => {
     const { id } = req.params
-
+    if(role != "Admin" && role != "Profesor") return res.status(401).json({error: "No autorizado"})
     try {
         const evaluacion = await prisma.evaluacion.findUnique({
             where: {id: parseInt(id)},
@@ -43,17 +42,23 @@ export const getEvaluacionById = async (req, res) => {
 }
 
 export const createEvaluacion = async (req, res) => {
-    const { profesorId, asignaturaId, notas, informes } = req.body
-    if(!profesorId || !asignaturaId) return res.status(400).json({ error: "El profesor y la asignatura son requeridos"})
-    
+    const { asignaturaId, notas, informes } = req.body
+    const data = req.data
+    if(!asignaturaId || !notas) return res.status(400).json({ error: "Faltan campos obligatorios"})
+    if(data.role != "Admin" && data.role != "Profesor") return res.status(401).json({ error: "No autorizado"})   
     try {
-        const profesor = await prisma.profesor.findUnique({ where: {id: profesorId}})
+        const usuario = await prisma.usuario.findUnique({
+            where: {id: data.id},
+            select: {
+                profesores: true
+            }
+        })
         const asignatura = await prisma.asignatura.findUnique({ where: {id: asignaturaId}})
-        if(!profesor || !asignatura) return res.status(404).json({ error: "Profesor o asignatura no encontrados"})
+        if(!asignatura) return res.status(404).json({ error: "Asignatura no encontrada"})
         
         const evaluacion = await prisma.evaluacion.create({
             data: {
-                profesorId,
+                profesorId: usuario.profesores[0].id,
                 asignaturaId,
                 notas: {
                     create: notas.map(nota => ({
@@ -69,7 +74,8 @@ export const createEvaluacion = async (req, res) => {
                 } : undefined
             },
             include: {
-                notas: true
+                notas: true,
+                informes: true
             }
         })
 
@@ -79,18 +85,55 @@ export const createEvaluacion = async (req, res) => {
     }
 }
 
+export const modifyEvaluacion = async (req, res) => {
+    const { id } = req.params
+    const data = req.data
+    const updateData = req.body
+
+    if(data.role != "Admin" && data.role != "Profesor") return res.status(401).json({ error: "No autorizado"})    
+    try {
+        const evaluacion = await prisma.evaluacion.findUnique({where: {id: parseInt(id)}})  
+        if(!evaluacion) return res.status(404).json({error: "No se encontro la evaluacion"})
+        const usuario = await prisma.usuario.findUnique({
+            where: {id: data.id},
+            select: {
+                profesores: true
+            }
+        })
+
+        if(evaluacion.profesorId !== usuario.profesores[0].id) return res.status(401).json({error: "Profesor no autorizado"})
+        
+        const updatedEvaluacion = await prisma.evaluacion.update({
+            where: { id: evaluacion.id },
+            data: updateData,
+        });
+        res.status(200).json(updatedEvaluacion)
+    } catch (error) {
+        res.status(500).json({error: error.message})
+    }
+}
+
+
 export const deleteEvaluacion = async (req, res) => {
     const { id } = req.params
     const data = req.data
 
-    if(data.role != "Admin" && data.role != "Profesor") return res.status(401).json({ error: "No autorizado"})
-    
+    if(data.role != "Admin" && data.role != "Profesor") return res.status(401).json({ error: "No autorizado"})    
     try {
-        const evaluacion = await prisma.evaluacion.findUnique({where: {id: parseInt(id)}})
+        const evaluacion = await prisma.evaluacion.findUnique({where: {id: parseInt(id)}})  
         if(!evaluacion) return res.status(404).json({error: "No se encontro la evaluacion"})
-        
-        res.json(evaluacion)
+        const usuario = await prisma.usuario.findUnique({
+            where: {id: data.id},
+            select: {
+                profesores: true
+            }
+        })
+
+        if(evaluacion.profesorId !== usuario.profesores[0].id) return res.status(401).json({error: "Profesor no autorizado"})
+        const deletedNotas = await prisma.nota.deleteMany({where: {evaluacionId: evaluacion.id}})
+        const deletedEvaluacion = await prisma.evaluacion.delete({where: {id: evaluacion.id}})
+        res.status(204).json({message: "Deleted"})
     } catch (error) {
-        
+        res.status(500).json({error: error.message})
     }
 }

@@ -34,6 +34,7 @@ import {
   deleteEvaluacion,
   getAllEvaluciones,
   getEvaluacionById,
+  modifyEvaluacion,
 } from "./controllers/evaluacion.js";
 import {
   getAllEvents,
@@ -72,7 +73,8 @@ router.post("/asignaturas/", createAsignatura);
 router.post("/evaluaciones/", authenticateToken, createEvaluacion);
 router.get("/evaluaciones/", authenticateToken, getAllEvaluciones);
 router.get("/evaluaciones/:id", authenticateToken, getEvaluacionById)
-router.get("/evaluacionesd/:id", authenticateToken, deleteEvaluacion)
+router.put("/evaluaciones/:id", authenticateToken, modifyEvaluacion)
+router.delete("/evaluaciones/:id", authenticateToken, deleteEvaluacion)
 
 router.get("/eventos/", getAllEvents);
 router.get("/eventos/:id", getEventById);

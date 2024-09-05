@@ -32,6 +32,7 @@ import { authenticateToken } from "./services/jwt.services.js";
 import {
   createEvaluacion,
   getAllEvaluciones,
+  getEvaluacionById,
 } from "./controllers/evaluacion.js";
 import {
   getAllEvents,
@@ -67,8 +68,9 @@ router.post("/padres/", createPadre);
 router.get("/asignaturas/", getAllAsignaturas);
 router.post("/asignaturas/", createAsignatura);
 
-router.post("/evaluaciones/", createEvaluacion);
-router.get("/evaluaciones/", getAllEvaluciones);
+router.post("/evaluaciones/", authenticateToken, createEvaluacion);
+router.get("/evaluaciones/", authenticateToken, getAllEvaluciones);
+router.get("/evaluaciones/:id", authenticateToken, getEvaluacionById)
 
 router.get("/eventos/", getAllEvents);
 router.get("/eventos/:id", getEventById);

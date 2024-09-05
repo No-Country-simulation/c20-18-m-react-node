@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 export const getAllProfesores = async (req, res) => {
   try {
     const profesores = await prisma.profesor.findMany({
-      include: {
+      select: {
+        id: true,
         usuario: {
           select: {
             nombre: true,
@@ -34,7 +35,8 @@ export const getProfesorById = async (req, res) => {
   try {
     const profesor = await prisma.profesor.findUnique({
       where: {id: parseInt(id)},
-      include: {
+      select: {
+        id: true,
         usuario: {
           select: {
             nombre: true,
@@ -78,7 +80,8 @@ export const createProfesor = async (req, res) => {
           })) : undefined
         }
       },
-      include: {
+      select: {
+        id: true,
         usuario: {
           select: {
             nombre: true,

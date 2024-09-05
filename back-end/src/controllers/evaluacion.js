@@ -2,26 +2,17 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
 export const getAllEvaluciones = async (req, res) => {
+    const {id, role} = req.data
+    if(role != "Admin" && role != "Profesor") return res.status(401).json({error: "No autorizado"})
     try {
         const evaluaciones = await prisma.evaluacion.findMany({
+            where: {profesorId: id},
             include: {
-                profesor: {
-                    select: {
-                        usuario: {
-                            select: {
-                                nombre: true,
-                                apellido: true
-                            }
-                        }
-                    }
-                },
                 asignatura: {
                     select: {
                         nombre: true
                     }
-                },
-                notas: true,
-                informes: true
+                }
             }
         })
         if(!evaluaciones) return res.status(404).json({ error: "No se encontraro evaluaciones"})
@@ -29,6 +20,25 @@ export const getAllEvaluciones = async (req, res) => {
         res.status(200).json(evaluaciones)
     } catch (error) {
         res.status(500).json({error: error.message})
+    }
+}
+
+export const getEvaluacionById = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const evaluacion = await prisma.evaluacion.findUnique({
+            where: {id: parseInt(id)},
+            include: {
+                notas: true,
+                informes: true
+            }
+        })
+        if(!evaluacion) return res.status(404).json({error: "Evaluacion no encontrada"})
+        
+        res.status(200).json(evaluacion)
+    } catch (error) {
+        
     }
 }
 

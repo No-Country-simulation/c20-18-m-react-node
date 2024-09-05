@@ -5,9 +5,15 @@ const prisma = new PrismaClient();
 export const getAllEstudiantes = async (req, res) => {
   try {
     const estudiantes = await prisma.estudiante.findMany({
-
       include: {
-        usuario: true,
+        usuario: {
+          select: {
+            nombre: true,
+            apellido: true,
+            email: true,
+            role: true,
+          },
+        },
         notas: true,
       },
     });

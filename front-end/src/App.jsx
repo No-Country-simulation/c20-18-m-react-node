@@ -1,14 +1,9 @@
-import { Link } from 'react-router-dom';
 import './App.css';
+import LandingPage from './pages/landing';
 
 function App() {
   return (
-    <>
-      <h1>Seguimiento Escolar Landing Page</h1>
-      <Link to='/login'>
-        <button type='button'>Ingresar</button>
-      </Link>
-    </>
+    <LandingPage />
   );
 }
 

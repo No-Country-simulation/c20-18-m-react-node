@@ -15,7 +15,7 @@ axios.interceptors.response.use(
       const token = localStorage.getItem('TOKEN');
       if (token) {
         console.log(`error ${error.response.status}: token vencido.`);
-        deleteToken();
+        cleanSession();
         window.location = '/';
       }
     }

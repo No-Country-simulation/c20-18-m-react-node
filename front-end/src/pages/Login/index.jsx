@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './styles.css';
-import { LOGIN } from './../../providers/endpoints.js';
+import { LOGIN } from '../../providers/endpoints.js';
 import { api, updateToken } from '../../providers/api.js';
-import { setToken } from '../../helpers/auth.js';
+import { cleanSession, setRole, setToken } from '../../helpers/auth.js';
 
 function Login() {
   let navigate = useNavigate();
@@ -26,22 +26,22 @@ function Login() {
       .then(
         (res) => {
           setToken(res.data.token);
-          // TODO: incorporar lógica de cierre de sesión
+
+          const role = res.data.role;
+          setRole(role);
           updateToken();
 
-          if (res.data.role === 'Admin') {
+          if (role === 'Admin') {
             navigate('/usuarios');
           } else {
-            navigate('/principal')
+            navigate('/principal');
           }
         },
         (error) => {
           console.log('error: ', error);
         }
       )
-      .finally(
-        setLoading(false)
-      );
+      .finally(setLoading(false));
   };
 
   return (

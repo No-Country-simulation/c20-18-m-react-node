@@ -3,14 +3,9 @@ import { createBrowserRouter } from 'react-router-dom';
 //* VISTAS
 import App from './App';
 import Login from './pages/Login';
-import Register from './pages/register';
-import Student from './pages/student';
-import Teacher from './pages/teacher';
-import Father from './pages/father';
-import HistorialAcademicoView from './pages/HistorialAcademicoView';
-import InformesView from './pages/InformesView';
-import EventosView from './pages/EventosView';
-import PrincipalView from './pages/Principal';
+import HistorialAcademicoView from './pages/historialAcademico';
+import InformesView from './pages/informes';
+import EventosView from './pages/eventos';
 import UsuariosView from './pages/Usuarios';
 
 /**
@@ -22,7 +17,6 @@ export const routes = {
   informes: '/informes',
   eventos: '/eventos',
   usuarios: '/usuarios',
-  principal: '/principal',
 };
 
 /**
@@ -31,13 +25,8 @@ export const routes = {
 export const router = createBrowserRouter([
   { path: '/', element: <App /> },
   { path: routes.login, element: <Login /> },
-  { path: '/register', element: <Register /> },
-  { path: '/student', element: <Student /> },
-  { path: '/teacher', element: <Teacher /> },
-  { path: '/father', element: <Father /> },
   { path: routes.historialAcademico, element: <HistorialAcademicoView /> },
   { path: routes.informes, element: <InformesView /> },
   { path: routes.eventos, element: <EventosView /> },
   { path: routes.usuarios, element: <UsuariosView /> },
-  { path: routes.principal, element: <PrincipalView /> },
 ]);

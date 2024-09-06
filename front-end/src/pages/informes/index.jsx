@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToken } from '../../helpers/auth';
 import SideBar from '../../assets/components/SideBar';
+import { getToken } from '../../helpers/auth';
 
 // TODO: completar
-function UsuariosView() {
+function InformesView() {
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -13,11 +13,11 @@ function UsuariosView() {
   }, []);
 
   return (
-    <main>
+    <div>
       <SideBar />
-      UsuariosView
-    </main>
+      <h2>InformesView</h2>
+    </div>
   );
 }
 
-export default UsuariosView;
+export default InformesView;

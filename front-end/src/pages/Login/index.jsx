@@ -1,14 +1,41 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './styles.css';
 import { LOGIN } from '../../providers/endpoints.js';
 import { api, updateToken } from '../../providers/api.js';
-import { cleanSession, setRole, setToken } from '../../helpers/auth.js';
+import {
+  cleanSession,
+  deleteRememberMe,
+  getRememberMe,
+  setRememberMe,
+  setRole,
+  setToken,
+} from '../../helpers/auth.js';
 
 function Login() {
   let navigate = useNavigate();
-  const [input, setInput] = useState({});
   const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState({
+    email: '',
+    password: '',
+  });
+  const [rememberMeBool, setRememberMeBool] = useState(false);
+
+  useEffect(() => {
+    cleanSession();
+    const rememberEmail = getRememberMe();
+    if (rememberEmail) {
+      setRememberMeBool(true);
+      setInput({
+        ...input,
+        email: rememberEmail,
+      });
+    }
+  }, []);
+
+  const handleRememberMe = (e) => {
+    setRememberMeBool(e.target.checked);
+  };
 
   const handleInput = (e) => {
     setInput({
@@ -31,6 +58,8 @@ function Login() {
           setRole(role);
           updateToken();
 
+          rememberMeBool ? setRememberMe(input.email) : deleteRememberMe();
+
           if (role === 'Admin') {
             navigate('/usuarios');
           } else {
@@ -50,8 +79,8 @@ function Login() {
       <div className='login-form-container'>
         <div className='login-form'>
           <h2>Ingreso</h2>
-          <label className='hintLogin'>
-            Ingresa tu correo y contraseña para iniciar sesion
+          <label className='hint-login'>
+            Ingresa tu correo y contraseña para iniciar sesión
           </label>
           <form onSubmit={onSubmit}>
             <div className='form-group'>
@@ -61,6 +90,7 @@ function Login() {
                 name='email'
                 placeholder='Correo'
                 onChange={handleInput}
+                value={input.email}
               />
             </div>
             <div className='form-group'>
@@ -72,19 +102,20 @@ function Login() {
                 onChange={handleInput}
               />
             </div>
-            <div className='form-group'>
-              <input type='checkbox' name='remember' />
-              <label>Recordarme</label>
+            <div className='remember-me'>
+              <input
+                id='remember-me'
+                type='checkbox'
+                name='remember'
+                onChange={handleRememberMe}
+                checked={rememberMeBool}
+              />
+              <label htmlFor='remember-me'>Recordarme</label>
             </div>
             <button type='submit' className='login-button' disabled={loading}>
               {!loading ? 'Iniciar sesión' : 'Cargando'}
             </button>
           </form>
-          <Link to='/register'>
-            <button type='button' className='signup-button'>
-              ¿Aún no tienes una cuenta? Crear cuenta
-            </button>
-          </Link>
         </div>
       </div>
     </div>
